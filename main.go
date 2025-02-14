@@ -30,4 +30,5 @@ func main() {
 		os.Exit(0)
 	}
 	fmt.Println("That's all!!")
+	fmt.Println("And an extra line")
 }
