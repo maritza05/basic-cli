@@ -22,7 +22,7 @@ func printVersion() {
 }
 
 func main() {
-	versionFlag := flag.Bool("version", false, "print version information")
+	versionFlag := flag.Bool("version", false, "print version information and other stuff")
 	flag.Parse()
 
 	if *versionFlag {
