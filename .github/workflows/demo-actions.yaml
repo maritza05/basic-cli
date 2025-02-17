@@ -9,24 +9,28 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      # run git checkout
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       # setup go
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: 1.23.x
 
-      # run goreleaser
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
+      # run git checkout
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: build.sh
+
+      - name: Copy Files
+        run: |
+          mkdir artifacts
+          cp pricing-engine-linux artifacts/.
+          cp pricing-engine-osx artifacts/.
+
+      - name: Archive
+        uses: actions/upload-artifact@latest
         with:
-          version: "~> v2"
-          args: release --clean
-          distribution: goreleaser
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: pricing-engine-linux
+          path: artifacts
+
