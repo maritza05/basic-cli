@@ -4,21 +4,16 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"runtime/debug"
+)
+
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
 )
 
 func printVersion() {
-	buildInfo, ok := debug.ReadBuildInfo()
-	if !ok {
-		fmt.Println("Unable to determine version information.")
-		return
-	}
-
-	if buildInfo.Main.Version != "" {
-		fmt.Printf("Version: %s\n", buildInfo.Main.Version)
-	} else {
-		fmt.Println("Version: unknown")
-	}
+	fmt.Printf("Version: %s\nCommit: %s\nDate: %s", version, commit, date)
 }
 
 func main() {
