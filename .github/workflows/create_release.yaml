@@ -4,23 +4,23 @@ on:
   push:
     tags:
       - "v*"
+
 jobs:
-  # the workflow can contain other jobs, such as linting, testing, etc.
+
   release:
     runs-on: ubuntu-latest
     steps:
-      # setup go
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: 1.23.x
 
-      # run git checkout
       - name: Checkout
         uses: actions/checkout@v4
+        # This is required for GoReleaser to work properly, as it will need the full history to work properly.
         with:
           fetch-depth: 0
-      # run goreleaser
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
