@@ -1,4 +1,4 @@
-name: Release
+name: Build and push docker image
 
 on:
   push:
@@ -10,22 +10,40 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.23.x
 
       - name: Checkout
         uses: actions/checkout@v4
-        # This is required for GoReleaser to work properly, as it will need the full history to work properly.
-        with:
-          fetch-depth: 0
 
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
+      - name: Set version
+        run: echo "VERSION=$(git describe --tags --always)" >> $GITHUB_ENV
+
+      - name: Set commit SHA
+        run: echo "COMMIT=${GITHUB_SHA}" >> $GITHUB_ENV
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
         with:
-          version: "~> v2"
-          args: release --clean
-          distribution: goreleaser
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          images: basic-cli
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      # - name: Run GoReleaser
+      #   uses: goreleaser/goreleaser-action@v6
+      #   with:
+      #     version: "~> v2"
+      #     args: release --clean
+      #     distribution: goreleaser
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
