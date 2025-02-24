@@ -1,6 +1,7 @@
 name: Build and push docker image
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "v*"
@@ -39,9 +40,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args:
-            - VERSION=${{ env.VERSION }}
-            - COMMIT=${{ env.COMMIT }}
+          build-args: "VERSION=${{ env.VERSION }} COMMIT=${{ env.COMMIT }}"
+          
       # - name: Run GoReleaser
       #   uses: goreleaser/goreleaser-action@v6
       #   with:
